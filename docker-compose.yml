@@ -1,7 +1,7 @@
 services:
-  microssapi-docs:
+  micross-api-docs:
     build: .
-    container_name: microssapi-docs
+    container_name: micross-api-docs
     restart: unless-stopped
     ports:
-      - "8899:80"   # 左侧改为你服务器实际可用端口
+      - "7079:80"   # 左侧改为你服务器实际可用端口
