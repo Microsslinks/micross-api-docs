@@ -1,0 +1,7 @@
+services:
+  microssapi-docs:
+    build: .
+    container_name: microssapi-docs
+    restart: unless-stopped
+    ports:
+      - "8899:80"   # 左侧改为你服务器实际可用端口

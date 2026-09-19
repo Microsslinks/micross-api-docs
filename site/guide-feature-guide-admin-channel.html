@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f7fbff" />
+<title>渠道管理 · MicrossAPI 使用手册</title>
+<link rel="icon" type="image/png" href="assets/logos/microsslink.png" />
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7fbff;
+  --surface: rgba(255, 255, 255, .90);
+  --surface-solid: #ffffff;
+  --surface-alt: #f1f7fc;
+  --text: #111827;
+  --text-2: #40516a;
+  --text-3: #718198;
+  --line: #e4edf5;
+  --line-strong: #cfe0ed;
+  --blue: #2d9af0;
+  --blue-deep: #1476ca;
+  --cyan: #13ad9b;
+  --purple: #8a62e8;
+  --shadow: 0 14px 36px rgba(31, 71, 112, .08);
+}
+html[data-theme="dark"] {
+  --bg: #0c1422;
+  --surface: rgba(19, 32, 52, .91);
+  --surface-solid: #1b2c44;
+  --surface-alt: #1b2d45;
+  --text: #f2f7ff;
+  --text-2: #c6d4e6;
+  --text-3: #9fb1c8;
+  --line: #2a405b;
+  --line-strong: #456381;
+  --blue: #6cc2ff;
+  --blue-deep: #91d2ff;
+  --cyan: #62ead7;
+  --purple: #c0a4ff;
+  --shadow: 0 15px 38px rgba(0, 0, 0, .24);
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue-deep); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout { display: flex; min-height: 100vh; max-width: 1280px; margin: 0 auto; background: var(--bg); }
+
+/* 侧边栏 */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 264px;
+  height: 100vh;
+  flex: none;
+  overflow-y: auto;
+  padding: 22px 18px 30px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+.brand { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 0 6px; color: var(--text); font-size: 16px; font-weight: 800; letter-spacing: -.01em; }
+.brand img { width: 34px; height: auto; flex: none; }
+.brand small { display: block; color: var(--text-3); font-size: 11.5px; font-weight: 500; }
+.nav-group { margin-top: 18px; }
+.nav-group > .g-title { padding: 0 8px 7px; color: var(--text-3); font-size: 11.5px; font-weight: 800; letter-spacing: .1em; }
+.nav-group a {
+  display: block;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.nav-group a:hover { background: var(--surface-alt); color: var(--text); text-decoration: none; }
+.nav-group a.active { background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.13)); color: var(--blue-deep); font-weight: 700; }
+html[data-theme="dark"] .nav-group a.active { background: linear-gradient(95deg, rgba(108,194,255,.13), rgba(195,168,255,.14)); color: #91d2ff; }
+
+/* 主内容 */
+.content { flex: 1; min-width: 0; padding: 40px 48px 80px; }
+.doc { max-width: 860px; margin: 0 auto; }
+.doc h1 { margin: 0 0 18px; font-size: 30px; letter-spacing: -.03em; line-height: 1.3; }
+.doc h2 { margin: 34px 0 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 21px; letter-spacing: -.02em; }
+.doc h3 { margin: 26px 0 10px; font-size: 16.5px; }
+.doc h4 { margin: 20px 0 8px; font-size: 14.5px; }
+.doc p, .doc li { color: var(--text-2); font-size: 14.5px; line-height: 1.85; }
+.doc ul, .doc ol { padding-left: 22px; }
+.doc li { margin: 4px 0; }
+.doc code { padding: 2px 6px; border-radius: 6px; background: var(--surface-alt); color: var(--blue-deep); font-size: 13px; font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace; }
+.doc pre { overflow-x: auto; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-alt); }
+.doc pre code { padding: 0; background: none; color: var(--text); font-size: 13px; line-height: 1.7; }
+.doc img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.doc table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+.doc th, .doc td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; }
+.doc th { background: var(--surface-alt); color: var(--text); font-weight: 700; }
+.doc td { color: var(--text-2); }
+.doc blockquote { margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; background: var(--surface-alt); }
+.doc blockquote p { margin: 0; }
+.doc hr { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
+
+.crumb { margin-bottom: 10px; color: var(--text-3); font-size: 12.5px; letter-spacing: .04em; }
+.doc-footer { max-width: 860px; margin: 48px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 12.5px; line-height: 1.8; }
+.doc-footer a { color: var(--text-3); }
+.doc-footer a:hover { color: var(--blue-deep); }
+
+/* 首页 */
+.home-hero { max-width: 860px; margin: 0 auto 34px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.home-hero .chip { display: inline-block; margin: 0 0 14px; padding: 6px 13px; border-radius: 999px; background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.14)); color: var(--blue-deep); font-size: 12.5px; font-weight: 800; letter-spacing: .06em; }
+html[data-theme="dark"] .home-hero .chip { background: linear-gradient(95deg, rgba(108,194,255,.14), rgba(195,168,255,.16)); color: #91d2ff; }
+.home-hero h1 { margin: 0 0 12px; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -.045em; }
+.home-hero h1 span { background: linear-gradient(95deg, #168ee6 4%, #835fe1 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-theme="dark"] .home-hero h1 span { background: linear-gradient(95deg, #77ccff 4%, #c3a8ff 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.home-hero p { margin: 0; max-width: 620px; color: var(--text-2); font-size: 15px; line-height: 1.8; }
+.card-grid { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.doc-card { display: block; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); transition: transform .2s ease, border-color .2s ease; }
+.doc-card:hover { transform: translateY(-2px); border-color: var(--line-strong); text-decoration: none; }
+.doc-card .cat { display: block; margin-bottom: 6px; color: var(--text-3); font-size: 11.5px; font-weight: 700; letter-spacing: .08em; }
+.doc-card b { color: var(--text); font-size: 15.5px; font-weight: 700; }
+
+.menu-btn { display: none; }
+@media (max-width: 900px) {
+  .sidebar { position: fixed; left: 0; top: 0; z-index: 40; transform: translateX(-100%); transition: transform .25s ease; box-shadow: var(--shadow); }
+  body.nav-open .sidebar { transform: none; }
+  .menu-btn { display: grid; position: fixed; right: 16px; bottom: 16px; z-index: 50; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-solid); color: var(--text-2); box-shadow: var(--shadow); font-size: 20px; cursor: pointer; }
+  .content { padding: 30px 20px 70px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" type="button" onclick="toggleNav()" aria-label="目录">&#9776;</button>
+<div class="layout">
+<aside class="sidebar"><p class="brand"><img src="assets/logos/microsslink.png" alt="Microsslink" /><span>MicrossAPI 使用手册<br /><small>用户指南 · 管理员指南</small></span></p><nav><div class="nav-group"><p class="g-title">概览</p><a href="guide-home.html">首页</a><a href="guide-feature-guide.html">功能指南概述</a></div><div class="nav-group"><p class="g-title">用户指南</p><a href="guide-feature-guide-user-topup.html">充值</a><a href="guide-feature-guide-user-token.html">令牌（API Key）</a><a href="guide-feature-guide-user-api.html">API 调用</a><a href="guide-feature-guide-user-pricing.html">定价</a><a href="guide-feature-guide-user-log.html">日志</a><a href="guide-feature-guide-user-task.html">任务</a><a href="guide-feature-guide-user-subscription.html">订阅</a><a href="guide-feature-guide-user-chat-apps.html">聊天应用</a><a href="guide-feature-guide-user-personal-setting.html">个人设置</a><a href="guide-feature-guide-user-auth.html">登录与认证</a></div><div class="nav-group"><p class="g-title">管理员指南</p><a href="guide-feature-guide-admin-channel.html" class="active">渠道管理</a><a href="guide-feature-guide-admin-model.html">模型管理</a><a href="guide-feature-guide-admin-group.html">分组管理</a><a href="guide-feature-guide-admin-user.html">用户管理</a><a href="guide-feature-guide-admin-redemption.html">兑换码管理</a><a href="guide-feature-guide-admin-subscription.html">订阅管理</a><a href="guide-feature-guide-admin-log.html">日志管理</a><a href="guide-feature-guide-admin-performance.html">性能与运维</a><a href="guide-feature-guide-admin-system-setting.html">系统设置</a><a href="guide-feature-guide-admin-system-setting-advanced.html">系统设置详细配置</a><a href="guide-feature-guide-admin-custom-oauth.html">自定义 OAuth</a><a href="guide-feature-guide-admin-docs-config.html">文档页配置</a></div></nav></aside>
+<main class="content">
+<article class="doc"><p class="crumb">管理员指南</p><div><span>管理员指南</span></div><h1>渠道管理</h1><p>渠道是平台对接 AI 服务商的核心配置单元</p><div></div><div><p>渠道是平台对接 AI 服务商的核心配置单元,每条渠道对应一个服务商的 API Key。使用管理员账号登录后,左侧导航点击「渠道」,或直接访问 <code>/console/channel</code>。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="渠道列表页" width="2549" height="1403" src="assets/img/img037.png"/></span></span></p>
+<p>渠道列表展示所有已配置的 AI 服务商渠道,包含名称、类型、状态(绿色=正常 / 红色=禁用)、响应时间、已用配额等信息。</p>
+<h2 id="添加渠道"><a href="#添加渠道">添加渠道</a></h2>
+<h3 id="基本配置"><a href="#基本配置">基本配置</a></h3>
+<ol>
+<li>在渠道列表页点击右上角「添加渠道」按钮,弹出配置弹窗</li>
+<li>在弹窗中选择服务商类型(如 OpenAI、Claude、Gemini 等)</li>
+<li>填写渠道名称和 API Key</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="添加渠道弹窗(基础信息)" width="2549" height="1403" src="assets/img/img038.png"/></span></span></p>
+<h3 id="选择模型"><a href="#选择模型">选择模型</a></h3>
+<p>在模型列表中勾选该渠道支持的模型,或点击「填入默认模型」自动填充</p>
+<h3 id="高级配置"><a href="#高级配置">高级配置</a></h3>
+<p>按需展开高级配置,填写以下可选项:</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="添加渠道弹窗(高级配置)" width="2549" height="1403" src="assets/img/img039.png"/></span></span></p>
+<div><table><thead><tr><th>配置项</th><th>说明</th></tr></thead><tbody><tr><td>Base URL</td><td>自定义接口地址,代理或私有部署时使用</td></tr><tr><td>优先级</td><td>数值越高越优先被选中,默认为 0</td></tr><tr><td>权重</td><td>同优先级下的随机权重,默认为 0</td></tr><tr><td>模型映射</td><td>将用户请求的模型名映射为实际模型名,JSON 格式</td></tr><tr><td>参数覆盖</td><td>强制覆盖请求中的某些参数,JSON 格式</td></tr><tr><td>自动禁用</td><td>开启后连续失败达到阈值时自动禁用该渠道</td></tr></tbody></table></div>
+<h3 id="提交保存"><a href="#提交保存">提交保存</a></h3>
+<p>点击「提交」完成渠道添加,新渠道出现在列表中</p>
+<h2 id="渠道测试"><a href="#渠道测试">渠道测试</a></h2>
+<h3 id="单个渠道测试"><a href="#单个渠道测试">单个渠道测试</a></h3>
+<ol>
+<li>在渠道列表中找到目标渠道,点击右侧操作栏中的「测试」按钮</li>
+<li>等待测试请求完成,弹窗显示响应时间和成功/失败状态</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="渠道测试结果弹窗" width="2549" height="1403" src="assets/img/img040.png"/></span></span></p>
+<p>响应时间越短说明该渠道速度越快。</p>
+<h3 id="批量测试"><a href="#批量测试">批量测试</a></h3>
+<p>点击列表顶部「测试所有渠道」按钮一键批量测试。</p>
+<h2 id="批量操作"><a href="#批量操作">批量操作</a></h2>
+<h3 id="选择渠道"><a href="#选择渠道">选择渠道</a></h3>
+<ol>
+<li>在渠道列表左侧勾选多条渠道的复选框</li>
+<li>页面顶部出现批量操作工具栏</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="勾选多条渠道后的批量操作栏" width="2549" height="1403" src="assets/img/img041.png"/></span></span></p>
+<h3 id="执行批量操作"><a href="#执行批量操作">执行批量操作</a></h3>
+<p>点击对应按钮执行批量操作:</p>
+<ul>
+<li><strong>批量启用</strong>:将选中渠道状态改为正常</li>
+<li><strong>批量禁用</strong>:将选中渠道状态改为禁用</li>
+<li><strong>批量打标签</strong>:为选中渠道统一设置标签,便于分类管理</li>
+</ul>
+<h2 id="多-key-模式"><a href="#多-key-模式">多 Key 模式</a></h2>
+<p>多 Key 模式允许一个渠道配置多个 API Key,系统自动轮询使用,单个 Key 失败后自动跳过,恢复后重新启用。</p>
+<h3 id="配置多-key"><a href="#配置多-key">配置多 Key</a></h3>
+<ol>
+<li>在渠道列表中点击目标渠道右侧的「编辑」按钮</li>
+<li>在编辑弹窗中找到「多 Key 管理」区域</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="多 Key 模式配置区域" width="2549" height="1403" src="assets/img/img042.png"/></span></span></p>
+<ol start="3">
+<li>点击「添加 Key」逐条输入多个 API Key</li>
+</ol>
+<h3 id="选择轮询模式"><a href="#选择轮询模式">选择轮询模式</a></h3>
+<p>选择轮询模式:</p>
+<div><table><thead><tr><th>轮询模式</th><th>说明</th></tr></thead><tbody><tr><td>轮询(Round Robin)</td><td>按顺序依次使用每个 Key</td></tr><tr><td>加权随机</td><td>按权重随机选择 Key</td></tr></tbody></table></div>
+<h3 id="保存配置"><a href="#保存配置">保存配置</a></h3>
+<p>点击「保存」完成配置</p>
+<h2 id="参数覆盖系统"><a href="#参数覆盖系统">参数覆盖系统</a></h2>
+<p>参数覆盖系统支持两种模式：简单覆盖模式（向前兼容）和高级操作模式。通过灵活的条件判断和操作类型，可以实现复杂的参数动态调整。</p>
+<h3 id="简单覆盖模式"><a href="#简单覆盖模式">简单覆盖模式</a></h3>
+<p>向前兼容性，直接指定要覆盖的字段和值，系统会将这些字段合并到原始请求中：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;temperature&quot;</span><span>: </span><span>0.8</span><span>,</span></span>
+<span><span>  &quot;max_tokens&quot;</span><span>: </span><span>2000</span><span>,</span></span>
+<span><span>  &quot;model&quot;</span><span>: </span><span>&quot;gpt-4&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h3 id="高级操作模式"><a href="#高级操作模式">高级操作模式</a></h3>
+<p>通过 <code>operations</code> 数组定义复杂的参数操作，支持条件判断、数组操作、字符串拼接与字符串规范化等高级功能。</p>
+<h4 id="基本结构"><a href="#基本结构">基本结构</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>0.8</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span><span>...</span><span>],</span></span>
+<span><span>      &quot;logic&quot;</span><span>: </span><span>&quot;AND&quot;</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>字段说明（按需填写）：</strong></p>
+<ul>
+<li><code>mode</code>: 必填</li>
+<li><code>path</code>: 适用于 <code>set</code> / <code>delete</code> / <code>append</code> / <code>prepend</code> / <code>trim_prefix</code> / <code>trim_suffix</code> / <code>ensure_prefix</code> / <code>ensure_suffix</code> / <code>trim_space</code> / <code>to_lower</code> / <code>to_upper</code> / <code>replace</code> / <code>regex_replace</code></li>
+<li><code>value</code>: 常见于 <code>set</code> / <code>append</code> / <code>prepend</code> / <code>trim_prefix</code> / <code>trim_suffix</code> / <code>ensure_prefix</code> / <code>ensure_suffix</code></li>
+<li><code>from</code> / <code>to</code>: 适用于 <code>move</code> / <code>copy</code> / <code>replace</code> / <code>regex_replace</code></li>
+<li><code>keep_origin</code>: 用于 <code>set</code>（已有值则跳过）以及对象合并时的 <code>append</code> / <code>prepend</code></li>
+</ul>
+<h3 id="操作模式-mode"><a href="#操作模式-mode">操作模式 (mode)</a></h3>
+<h4 id="1-set---设置值"><a href="#1-set---设置值">1. set - 设置值</a></h4>
+<p>设置指定路径的值：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>0.8</span><span>,</span></span>
+<span><span>  &quot;keep_origin&quot;</span><span>: </span><span>false</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><code>keep_origin</code>: 为 <code>true</code> 时，如果目标路径已存在值则跳过设置</li>
+</ul>
+<h4 id="2-delete---删除字段"><a href="#2-delete---删除字段">2. delete - 删除字段</a></h4>
+<p>删除指定路径的字段：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;messages.0&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;delete&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="3-move---移动字段"><a href="#3-move---移动字段">3. move - 移动字段</a></h4>
+<p>将一个字段的值移动到另一个位置：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;move&quot;</span><span>,</span></span>
+<span><span>  &quot;from&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>  &quot;to&quot;</span><span>: </span><span>&quot;system&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="4-append---追加内容"><a href="#4-append---追加内容">4. append - 追加内容</a></h4>
+<p>在现有内容后追加新内容：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;append&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;</span><span>\n\n</span><span>请用中文回答。&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>支持的数据类型：</strong></p>
+<ul>
+<li><strong>字符串</strong>: 在原字符串末尾追加</li>
+<li><strong>数组</strong>: 在数组末尾添加元素（支持添加单个元素或数组）</li>
+<li><strong>对象</strong>: 合并对象属性</li>
+</ul>
+<h4 id="5-prepend---前置内容"><a href="#5-prepend---前置内容">5. prepend - 前置内容</a></h4>
+<p>在现有内容前添加新内容：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;prepend&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;重要提示：请仔细阅读以下内容。</span><span>\n\n</span><span>&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>支持的数据类型：</strong></p>
+<ul>
+<li><strong>字符串</strong>: 在原字符串开头前置</li>
+<li><strong>数组</strong>: 在数组开头添加元素（支持添加单个元素或数组）</li>
+<li><strong>对象</strong>: 合并对象属性</li>
+</ul>
+<h4 id="6-copy---复制字段"><a href="#6-copy---复制字段">6. copy - 复制字段</a></h4>
+<p>将 <code>from</code> 指定路径的值复制到 <code>to</code> 指定路径（不删除源字段）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;copy&quot;</span><span>,</span></span>
+<span><span>  &quot;from&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;to&quot;</span><span>: </span><span>&quot;original_model&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="7-trim_prefix---去除前缀"><a href="#7-trim_prefix---去除前缀">7. trim_prefix - 去除前缀</a></h4>
+<p>对字符串字段去除指定前缀（若不匹配则不变）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;trim_prefix&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;openai/&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="8-trim_suffix---去除后缀"><a href="#8-trim_suffix---去除后缀">8. trim_suffix - 去除后缀</a></h4>
+<p>对字符串字段去除指定后缀（若不匹配则不变）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;trim_suffix&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;-latest&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="9-ensure_prefix---确保前缀"><a href="#9-ensure_prefix---确保前缀">9. ensure_prefix - 确保前缀</a></h4>
+<p>确保字符串字段以指定前缀开头（已存在则不变）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;ensure_prefix&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;openai/&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="10-ensure_suffix---确保后缀"><a href="#10-ensure_suffix---确保后缀">10. ensure_suffix - 确保后缀</a></h4>
+<p>确保字符串字段以指定后缀结尾（已存在则不变）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;ensure_suffix&quot;</span><span>,</span></span>
+<span><span>  &quot;value&quot;</span><span>: </span><span>&quot;-latest&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="11-trim_space---去除首尾空白"><a href="#11-trim_space---去除首尾空白">11. trim_space - 去除首尾空白</a></h4>
+<p>对字符串字段执行 <code>TrimSpace</code>（空格、换行、制表符等都会被移除）：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;trim_space&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="12-to_lower---转小写"><a href="#12-to_lower---转小写">12. to_lower - 转小写</a></h4>
+<p>将字符串字段转换为小写：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;to_lower&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="13-to_upper---转大写"><a href="#13-to_upper---转大写">13. to_upper - 转大写</a></h4>
+<p>将字符串字段转换为大写：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;to_upper&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="14-replace---字符串替换"><a href="#14-replace---字符串替换">14. replace - 字符串替换</a></h4>
+<p>对字符串字段执行子串替换：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;replace&quot;</span><span>,</span></span>
+<span><span>  &quot;from&quot;</span><span>: </span><span>&quot;openai/&quot;</span><span>,</span></span>
+<span><span>  &quot;to&quot;</span><span>: </span><span>&quot;&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>参数要求：</strong></p>
+<ul>
+<li><code>from</code>: 必填且不能为空字符串</li>
+<li><code>to</code>: 可选，省略时等同于空字符串</li>
+</ul>
+<h4 id="15-regex_replace---正则替换"><a href="#15-regex_replace---正则替换">15. regex_replace - 正则替换</a></h4>
+<p>对字符串字段执行正则匹配替换：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>  &quot;mode&quot;</span><span>: </span><span>&quot;regex_replace&quot;</span><span>,</span></span>
+<span><span>  &quot;from&quot;</span><span>: </span><span>&quot;^gpt-&quot;</span><span>,</span></span>
+<span><span>  &quot;to&quot;</span><span>: </span><span>&quot;openai/gpt-&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>参数要求：</strong></p>
+<ul>
+<li><code>from</code>: 必填（正则表达式，Go regexp 语法）</li>
+<li><code>to</code>: 可选，省略时等同于空字符串</li>
+</ul>
+<h3 id="条件判断"><a href="#条件判断">条件判断</a></h3>
+<p>通过 <code>conditions</code> 数组设置操作执行的条件，仅当条件满足时才会执行对应操作。</p>
+<h4 id="条件结构"><a href="#条件结构">条件结构</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>&quot;gpt-4&quot;</span><span>,</span></span>
+<span><span>      &quot;invert&quot;</span><span>: </span><span>false</span><span>,</span></span>
+<span><span>      &quot;pass_missing_key&quot;</span><span>: </span><span>false</span></span>
+<span><span>    }</span></span>
+<span><span>  ],</span></span>
+<span><span>  &quot;logic&quot;</span><span>: </span><span>&quot;AND&quot;</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="条件匹配模式"><a href="#条件匹配模式">条件匹配模式</a></h4>
+<ul>
+<li><code>full</code>: 完全匹配（默认）</li>
+<li><code>prefix</code>: 前缀匹配</li>
+<li><code>suffix</code>: 后缀匹配</li>
+<li><code>contains</code>: 包含匹配</li>
+<li><code>gt</code>: 大于（仅数字类型）</li>
+<li><code>gte</code>: 大于等于（仅数字类型）</li>
+<li><code>lt</code>: 小于（仅数字类型）</li>
+<li><code>lte</code>: 小于等于（仅数字类型）</li>
+</ul>
+<p><strong>须知：</strong></p>
+<ul>
+<li>数值比较只能用于数字类型</li>
+<li>字符串操作（prefix、suffix、contains）会将值转换为字符串进行比较</li>
+</ul>
+<h4 id="条件参数说明"><a href="#条件参数说明">条件参数说明</a></h4>
+<ul>
+<li><code>invert</code>: 反选功能，<code>true</code> 表示取反结果</li>
+<li><code>pass_missing_key</code>: 当指定路径不存在时的行为<!-- -->
+<ul>
+<li><code>true</code>: 路径不存在时条件通过</li>
+<li><code>false</code>: 路径不存在时条件不通过（默认）</li>
+</ul>
+</li>
+</ul>
+<h4 id="逻辑关系-logic"><a href="#逻辑关系-logic">逻辑关系 (logic)</a></h4>
+<ul>
+<li><code>AND</code>: 所有条件都必须满足</li>
+<li><code>OR</code>: 任意条件满足即可（默认）</li>
+</ul>
+<h3 id="路径语法"><a href="#路径语法">路径语法</a></h3>
+<p>使用 JSON 路径语法访问嵌套字段：</p>
+<ul>
+<li><code>temperature</code> - 根级字段</li>
+<li><code>messages.0.content</code> - 数组第一个元素的 content 字段</li>
+<li><code>messages.-1.content</code> - 数组最后一个元素的 content 字段</li>
+<li><code>metadata.user.name</code> - 嵌套对象字段</li>
+</ul>
+<p>同时，<code>path</code> 支持以下内置变量（无需在请求体中显式存在），可直接用于条件判断：</p>
+<div><table><thead><tr><th>变量</th><th>含义</th><th>典型用途</th></tr></thead><tbody><tr><td><code>model</code> / <code>upstream_model</code></td><td>重定向后的目标模型</td><td>按实际调用的上游模型做条件匹配</td></tr><tr><td><code>original_model</code></td><td>重定向前的目标模型</td><td>按用户请求的原始模型做条件匹配</td></tr></tbody></table></div>
+<h3 id="实用示例"><a href="#实用示例">实用示例</a></h3>
+<h4 id="1-动态调整模型参数"><a href="#1-动态调整模型参数">1. 动态调整模型参数</a></h4>
+<p>根据消息内容动态调整温度参数：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>0.3</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;代码&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    },</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>0.9</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;创意&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="2-添加系统提示"><a href="#2-添加系统提示">2. 添加系统提示</a></h4>
+<p>在消息数组开头添加系统消息：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;messages&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;prepend&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;role&quot;</span><span>: </span><span>&quot;system&quot;</span><span>,</span></span>
+<span><span>          &quot;content&quot;</span><span>: </span><span>&quot;你是一个专业的AI助手，请始终保持礼貌和专业。&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="3-根据模型类型调整参数"><a href="#3-根据模型类型调整参数">3. 根据模型类型调整参数</a></h4>
+<p>根据不同模型设置不同的 max_tokens：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;max_tokens&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>4000</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;prefix&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;gpt-4&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    },</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;max_tokens&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>2000</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;prefix&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;gpt-3.5&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="4-多条件组合and逻辑"><a href="#4-多条件组合and逻辑">4. 多条件组合（AND逻辑）</a></h4>
+<p>同时满足多个条件时才执行操作：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;stream&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>false</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;claude&quot;</span></span>
+<span><span>        },</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;messages.0.content&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;长文&quot;</span></span>
+<span><span>        }</span></span>
+<span><span>      ],</span></span>
+<span><span>      &quot;logic&quot;</span><span>: </span><span>&quot;AND&quot;</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="5-数值比较条件"><a href="#5-数值比较条件">5. 数值比较条件</a></h4>
+<p>根据数值大小进行条件判断：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>0.1</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;max_tokens&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;gt&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>1000</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="6-反选条件"><a href="#6-反选条件">6. 反选条件</a></h4>
+<p>使用 <code>invert</code> 实现反选逻辑：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;stream&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>true</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;model&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;contains&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;gpt-3.5&quot;</span><span>,</span></span>
+<span><span>          &quot;invert&quot;</span><span>: </span><span>true</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="7-处理缺失字段"><a href="#7-处理缺失字段">7. 处理缺失字段</a></h4>
+<p>使用 <code>pass_missing_key</code> 处理可能不存在的字段：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;temperature&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;set&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>0.7</span><span>,</span></span>
+<span><span>      &quot;conditions&quot;</span><span>: [</span></span>
+<span><span>        {</span></span>
+<span><span>          &quot;path&quot;</span><span>: </span><span>&quot;custom_field&quot;</span><span>,</span></span>
+<span><span>          &quot;mode&quot;</span><span>: </span><span>&quot;full&quot;</span><span>,</span></span>
+<span><span>          &quot;value&quot;</span><span>: </span><span>&quot;special&quot;</span><span>,</span></span>
+<span><span>          &quot;pass_missing_key&quot;</span><span>: </span><span>true</span></span>
+<span><span>        }</span></span>
+<span><span>      ]</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="8-字符串拼接示例"><a href="#8-字符串拼接示例">8. 字符串拼接示例</a></h4>
+<p>在用户消息后追加指导语：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;operations&quot;</span><span>: [</span></span>
+<span><span>    {</span></span>
+<span><span>      &quot;path&quot;</span><span>: </span><span>&quot;messages.-1.content&quot;</span><span>,</span></span>
+<span><span>      &quot;mode&quot;</span><span>: </span><span>&quot;append&quot;</span><span>,</span></span>
+<span><span>      &quot;value&quot;</span><span>: </span><span>&quot;</span><span>\n\n</span><span>请详细解释你的思考过程。&quot;</span></span>
+<span><span>    }</span></span>
+<span><span>  ]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h3 id="注意事项"><a href="#注意事项">注意事项</a></h3>
+<div><divnone"></div><div><div><p><strong>执行顺序</strong>: 操作按照在 <code>operations</code> 数组中的顺序依次执行，前面的操作会影响后续操作</p></div></div></div></div><div><div>
+<p class="doc-footer">本手册为 Microsslink 微观互联旗下 MicrossAPI 平台的站内使用文档，内容基于上游开源项目 New API（docs.newapi.ai）的官方文档整理本地化，仅供站内用户学习使用；版权归原项目所有，以官方最新文档为准。</p>
+</article>
+</main>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() { root.setAttribute('data-theme', mq.matches ? 'dark' : 'light'); }
+  if (mq.addEventListener) mq.addEventListener('change', apply); else if (mq.addListener) mq.addListener(apply);
+  apply();
+})();
+function toggleNav() { document.body.classList.toggle('nav-open'); }
+document.addEventListener('click', function (e) {
+  if (document.body.classList.contains('nav-open') && !e.target.closest('.sidebar') && !e.target.closest('.menu-btn')) {
+    document.body.classList.remove('nav-open');
+  }
+});
+</script>
+</body>
+</html>

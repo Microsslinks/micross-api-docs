@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f7fbff" />
+<title>系统设置 · MicrossAPI 使用手册</title>
+<link rel="icon" type="image/png" href="assets/logos/microsslink.png" />
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7fbff;
+  --surface: rgba(255, 255, 255, .90);
+  --surface-solid: #ffffff;
+  --surface-alt: #f1f7fc;
+  --text: #111827;
+  --text-2: #40516a;
+  --text-3: #718198;
+  --line: #e4edf5;
+  --line-strong: #cfe0ed;
+  --blue: #2d9af0;
+  --blue-deep: #1476ca;
+  --cyan: #13ad9b;
+  --purple: #8a62e8;
+  --shadow: 0 14px 36px rgba(31, 71, 112, .08);
+}
+html[data-theme="dark"] {
+  --bg: #0c1422;
+  --surface: rgba(19, 32, 52, .91);
+  --surface-solid: #1b2c44;
+  --surface-alt: #1b2d45;
+  --text: #f2f7ff;
+  --text-2: #c6d4e6;
+  --text-3: #9fb1c8;
+  --line: #2a405b;
+  --line-strong: #456381;
+  --blue: #6cc2ff;
+  --blue-deep: #91d2ff;
+  --cyan: #62ead7;
+  --purple: #c0a4ff;
+  --shadow: 0 15px 38px rgba(0, 0, 0, .24);
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue-deep); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout { display: flex; min-height: 100vh; max-width: 1280px; margin: 0 auto; background: var(--bg); }
+
+/* 侧边栏 */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 264px;
+  height: 100vh;
+  flex: none;
+  overflow-y: auto;
+  padding: 22px 18px 30px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+.brand { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 0 6px; color: var(--text); font-size: 16px; font-weight: 800; letter-spacing: -.01em; }
+.brand img { width: 34px; height: auto; flex: none; }
+.brand small { display: block; color: var(--text-3); font-size: 11.5px; font-weight: 500; }
+.nav-group { margin-top: 18px; }
+.nav-group > .g-title { padding: 0 8px 7px; color: var(--text-3); font-size: 11.5px; font-weight: 800; letter-spacing: .1em; }
+.nav-group a {
+  display: block;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.nav-group a:hover { background: var(--surface-alt); color: var(--text); text-decoration: none; }
+.nav-group a.active { background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.13)); color: var(--blue-deep); font-weight: 700; }
+html[data-theme="dark"] .nav-group a.active { background: linear-gradient(95deg, rgba(108,194,255,.13), rgba(195,168,255,.14)); color: #91d2ff; }
+
+/* 主内容 */
+.content { flex: 1; min-width: 0; padding: 40px 48px 80px; }
+.doc { max-width: 860px; margin: 0 auto; }
+.doc h1 { margin: 0 0 18px; font-size: 30px; letter-spacing: -.03em; line-height: 1.3; }
+.doc h2 { margin: 34px 0 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 21px; letter-spacing: -.02em; }
+.doc h3 { margin: 26px 0 10px; font-size: 16.5px; }
+.doc h4 { margin: 20px 0 8px; font-size: 14.5px; }
+.doc p, .doc li { color: var(--text-2); font-size: 14.5px; line-height: 1.85; }
+.doc ul, .doc ol { padding-left: 22px; }
+.doc li { margin: 4px 0; }
+.doc code { padding: 2px 6px; border-radius: 6px; background: var(--surface-alt); color: var(--blue-deep); font-size: 13px; font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace; }
+.doc pre { overflow-x: auto; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-alt); }
+.doc pre code { padding: 0; background: none; color: var(--text); font-size: 13px; line-height: 1.7; }
+.doc img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.doc table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+.doc th, .doc td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; }
+.doc th { background: var(--surface-alt); color: var(--text); font-weight: 700; }
+.doc td { color: var(--text-2); }
+.doc blockquote { margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; background: var(--surface-alt); }
+.doc blockquote p { margin: 0; }
+.doc hr { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
+
+.crumb { margin-bottom: 10px; color: var(--text-3); font-size: 12.5px; letter-spacing: .04em; }
+.doc-footer { max-width: 860px; margin: 48px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 12.5px; line-height: 1.8; }
+.doc-footer a { color: var(--text-3); }
+.doc-footer a:hover { color: var(--blue-deep); }
+
+/* 首页 */
+.home-hero { max-width: 860px; margin: 0 auto 34px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.home-hero .chip { display: inline-block; margin: 0 0 14px; padding: 6px 13px; border-radius: 999px; background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.14)); color: var(--blue-deep); font-size: 12.5px; font-weight: 800; letter-spacing: .06em; }
+html[data-theme="dark"] .home-hero .chip { background: linear-gradient(95deg, rgba(108,194,255,.14), rgba(195,168,255,.16)); color: #91d2ff; }
+.home-hero h1 { margin: 0 0 12px; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -.045em; }
+.home-hero h1 span { background: linear-gradient(95deg, #168ee6 4%, #835fe1 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-theme="dark"] .home-hero h1 span { background: linear-gradient(95deg, #77ccff 4%, #c3a8ff 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.home-hero p { margin: 0; max-width: 620px; color: var(--text-2); font-size: 15px; line-height: 1.8; }
+.card-grid { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.doc-card { display: block; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); transition: transform .2s ease, border-color .2s ease; }
+.doc-card:hover { transform: translateY(-2px); border-color: var(--line-strong); text-decoration: none; }
+.doc-card .cat { display: block; margin-bottom: 6px; color: var(--text-3); font-size: 11.5px; font-weight: 700; letter-spacing: .08em; }
+.doc-card b { color: var(--text); font-size: 15.5px; font-weight: 700; }
+
+.menu-btn { display: none; }
+@media (max-width: 900px) {
+  .sidebar { position: fixed; left: 0; top: 0; z-index: 40; transform: translateX(-100%); transition: transform .25s ease; box-shadow: var(--shadow); }
+  body.nav-open .sidebar { transform: none; }
+  .menu-btn { display: grid; position: fixed; right: 16px; bottom: 16px; z-index: 50; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-solid); color: var(--text-2); box-shadow: var(--shadow); font-size: 20px; cursor: pointer; }
+  .content { padding: 30px 20px 70px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" type="button" onclick="toggleNav()" aria-label="目录">&#9776;</button>
+<div class="layout">
+<aside class="sidebar"><p class="brand"><img src="assets/logos/microsslink.png" alt="Microsslink" /><span>MicrossAPI 使用手册<br /><small>用户指南 · 管理员指南</small></span></p><nav><div class="nav-group"><p class="g-title">概览</p><a href="guide-home.html">首页</a><a href="guide-feature-guide.html">功能指南概述</a></div><div class="nav-group"><p class="g-title">用户指南</p><a href="guide-feature-guide-user-topup.html">充值</a><a href="guide-feature-guide-user-token.html">令牌（API Key）</a><a href="guide-feature-guide-user-api.html">API 调用</a><a href="guide-feature-guide-user-pricing.html">定价</a><a href="guide-feature-guide-user-log.html">日志</a><a href="guide-feature-guide-user-task.html">任务</a><a href="guide-feature-guide-user-subscription.html">订阅</a><a href="guide-feature-guide-user-chat-apps.html">聊天应用</a><a href="guide-feature-guide-user-personal-setting.html">个人设置</a><a href="guide-feature-guide-user-auth.html">登录与认证</a></div><div class="nav-group"><p class="g-title">管理员指南</p><a href="guide-feature-guide-admin-channel.html">渠道管理</a><a href="guide-feature-guide-admin-model.html">模型管理</a><a href="guide-feature-guide-admin-group.html">分组管理</a><a href="guide-feature-guide-admin-user.html">用户管理</a><a href="guide-feature-guide-admin-redemption.html">兑换码管理</a><a href="guide-feature-guide-admin-subscription.html">订阅管理</a><a href="guide-feature-guide-admin-log.html">日志管理</a><a href="guide-feature-guide-admin-performance.html">性能与运维</a><a href="guide-feature-guide-admin-system-setting.html" class="active">系统设置</a><a href="guide-feature-guide-admin-system-setting-advanced.html">系统设置详细配置</a><a href="guide-feature-guide-admin-custom-oauth.html">自定义 OAuth</a><a href="guide-feature-guide-admin-docs-config.html">文档页配置</a></div></nav></aside>
+<main class="content">
+<article class="doc"><p class="crumb">管理员指南</p><div><span>管理员指南</span></div><h1>系统设置</h1><p>Root 专属的全局配置中心</p><div></div><div><p>Root 专属的全局配置中心，涵盖站点基础信息、计费规则、支付配置等所有系统级参数。使用 Root 账号登录后，左侧导航点击「设置」，或直接访问 <code>/console/setting</code>。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="系统设置页标签页导航总览" width="2549" height="1403" src="assets/img/img062.png"/></span></span></p>
+<p>系统设置页顶部有多个标签页，点击对应标签切换到不同配置区域。</p>
+<h2 id="通用设置"><a href="#通用设置">通用设置</a></h2>
+<ol>
+<li>点击「通用设置」标签页</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="通用设置标签页" width="2549" height="1403" src="assets/img/img063.png"/></span></span></p>
+<ol start="2">
+<li>可配置以下内容：<!-- -->
+<ul>
+<li><strong>站点名称</strong>：显示在浏览器标签和页面顶部的名称</li>
+<li><strong>首页公告</strong>：在首页展示的公告文字，支持 Markdown 格式</li>
+<li><strong>文档地址</strong>：填写后首页左侧导航出现「文档」按钮，点击跳转到该地址</li>
+<li><strong>充值链接</strong>：自定义充值页面的跳转地址</li>
+</ul>
+</li>
+<li>修改完成后点击「保存」</li>
+</ol>
+<div><divnone"></div><div><div><p>文档地址留空时，左侧导航不会显示「文档」按钮。</p></div></div></div>
+<h2 id="计费与倍率设置"><a href="#计费与倍率设置">计费与倍率设置</a></h2>
+<ol>
+<li>点击「计费设置」或「倍率设置」标签页</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="计费与倍率设置标签页" width="2549" height="1403" src="assets/img/img064.png"/></span></span></p>
+<ol start="2">
+<li>在模型倍率列表中找到目标模型，修改输入/输出倍率数值</li>
+<li>在分组倍率区域可为不同分组设置差异化的计费倍率</li>
+<li>修改完成后点击「保存」</li>
+</ol>
+<h2 id="注册与安全设置"><a href="#注册与安全设置">注册与安全设置</a></h2>
+<ol>
+<li>点击「安全设置」或「注册设置」标签页</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="注册与安全设置标签页" width="2549" height="1403" src="assets/img/img065.png"/></span></span></p>
+<ol start="2">
+<li>可配置以下内容：<!-- -->
+<ul>
+<li><strong>开放注册</strong>：开关控制是否允许新用户自行注册</li>
+<li><strong>邮箱白名单</strong>：限制只有特定邮箱域名可以注册</li>
+<li><strong>Turnstile 验证</strong>：填写 Cloudflare Turnstile 的 Site Key 和 Secret Key，启用人机验证</li>
+</ul>
+</li>
+<li>修改完成后点击「保存」</li>
+</ol>
+<h2 id="oauth-配置"><a href="#oauth-配置">OAuth 配置</a></h2>
+<ol>
+<li>点击「OAuth 设置」标签页</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="OAuth 设置标签页" width="2549" height="1403" src="assets/img/img066.png"/></span></span></p>
+<ol start="2">
+<li>为需要启用的第三方登录平台填写对应的 Client ID 和 Client Secret</li>
+<li>修改完成后点击「保存」，用户登录页即可看到对应的第三方登录按钮</li>
+</ol>
+<h3 id="oidc-配置重要提示"><a href="#oidc-配置重要提示">OIDC 配置重要提示</a></h3>
+<div><divnone"></div><div><div><p>当启用 OIDC 配置后，请一定要勾选&quot;允许新用户注册&quot;，否则会导致 OIDC 登录的新用户无法正常创建用户，并同时勾选&quot;允许通过 OIDC 进行登录&quot;。其他配置根据需要勾选。</p></div></div></div>
+<h2 id="邮件服务器配置"><a href="#邮件服务器配置">邮件服务器配置</a></h2>
+<p>配置邮件服务器用于发送验证码、通知等邮件。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="系统设置 - 邮件服务器" width="3354" height="1864" src="assets/img/img067.png"/></span></span></p>
+<ol>
+<li>在系统设置页找到「邮件服务器」配置区域</li>
+<li>填写以下信息：<!-- -->
+<ul>
+<li><strong>SMTP 服务器地址</strong>：邮件服务器地址（如 smtp.gmail.com）</li>
+<li><strong>SMTP 端口</strong>：通常为 465（SSL）或 587（TLS）</li>
+<li><strong>发件人邮箱</strong>：用于发送邮件的邮箱地址</li>
+<li><strong>发件人名称</strong>：邮件中显示的发件人名称</li>
+<li><strong>SMTP 用户名</strong>：通常与发件人邮箱相同</li>
+<li><strong>SMTP 密码</strong>：邮箱的授权密码或应用专用密码</li>
+</ul>
+</li>
+<li>点击「测试邮件」验证配置是否正确</li>
+<li>点击「保存」</li>
+</ol>
+<div><divnone"></div><div><div><p>Gmail 等邮箱需要使用应用专用密码，而不是账号密码。请在邮箱设置中生成应用专用密码。</p></div></div></div>
+<h2 id="worker-配置"><a href="#worker-配置">Worker 配置</a></h2>
+<p>配置 MicrossAPI Worker 相关参数。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="系统设置 - Worker 配置" width="3354" height="496" src="assets/img/img068.png"/></span></span></p>
+<p>Worker 用于处理异步任务，如：</p>
+<ul>
+<li>邮件发送</li>
+<li>数据统计</li>
+<li>定时任务</li>
+</ul>
+<p>配置项：</p>
+<ul>
+<li><strong>Worker 数量</strong>：并发处理任务的 Worker 数量</li>
+<li><strong>任务队列大小</strong>：待处理任务的队列容量</li>
+</ul>
+<div><divnone"></div><div><div><p>Worker 数量建议根据服务器性能设置，通常设置为 CPU 核心数的 2-4 倍</p></div></div></div></div><div><div>
+<p class="doc-footer">本手册为 Microsslink 微观互联旗下 MicrossAPI 平台的站内使用文档，内容基于上游开源项目 New API（docs.newapi.ai）的官方文档整理本地化，仅供站内用户学习使用；版权归原项目所有，以官方最新文档为准。</p>
+</article>
+</main>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() { root.setAttribute('data-theme', mq.matches ? 'dark' : 'light'); }
+  if (mq.addEventListener) mq.addEventListener('change', apply); else if (mq.addListener) mq.addListener(apply);
+  apply();
+})();
+function toggleNav() { document.body.classList.toggle('nav-open'); }
+document.addEventListener('click', function (e) {
+  if (document.body.classList.contains('nav-open') && !e.target.closest('.sidebar') && !e.target.closest('.menu-btn')) {
+    document.body.classList.remove('nav-open');
+  }
+});
+</script>
+</body>
+</html>

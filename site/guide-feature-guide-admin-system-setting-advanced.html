@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f7fbff" />
+<title>系统设置详细配置 · MicrossAPI 使用手册</title>
+<link rel="icon" type="image/png" href="assets/logos/microsslink.png" />
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7fbff;
+  --surface: rgba(255, 255, 255, .90);
+  --surface-solid: #ffffff;
+  --surface-alt: #f1f7fc;
+  --text: #111827;
+  --text-2: #40516a;
+  --text-3: #718198;
+  --line: #e4edf5;
+  --line-strong: #cfe0ed;
+  --blue: #2d9af0;
+  --blue-deep: #1476ca;
+  --cyan: #13ad9b;
+  --purple: #8a62e8;
+  --shadow: 0 14px 36px rgba(31, 71, 112, .08);
+}
+html[data-theme="dark"] {
+  --bg: #0c1422;
+  --surface: rgba(19, 32, 52, .91);
+  --surface-solid: #1b2c44;
+  --surface-alt: #1b2d45;
+  --text: #f2f7ff;
+  --text-2: #c6d4e6;
+  --text-3: #9fb1c8;
+  --line: #2a405b;
+  --line-strong: #456381;
+  --blue: #6cc2ff;
+  --blue-deep: #91d2ff;
+  --cyan: #62ead7;
+  --purple: #c0a4ff;
+  --shadow: 0 15px 38px rgba(0, 0, 0, .24);
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue-deep); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout { display: flex; min-height: 100vh; max-width: 1280px; margin: 0 auto; background: var(--bg); }
+
+/* 侧边栏 */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 264px;
+  height: 100vh;
+  flex: none;
+  overflow-y: auto;
+  padding: 22px 18px 30px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+.brand { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 0 6px; color: var(--text); font-size: 16px; font-weight: 800; letter-spacing: -.01em; }
+.brand img { width: 34px; height: auto; flex: none; }
+.brand small { display: block; color: var(--text-3); font-size: 11.5px; font-weight: 500; }
+.nav-group { margin-top: 18px; }
+.nav-group > .g-title { padding: 0 8px 7px; color: var(--text-3); font-size: 11.5px; font-weight: 800; letter-spacing: .1em; }
+.nav-group a {
+  display: block;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.nav-group a:hover { background: var(--surface-alt); color: var(--text); text-decoration: none; }
+.nav-group a.active { background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.13)); color: var(--blue-deep); font-weight: 700; }
+html[data-theme="dark"] .nav-group a.active { background: linear-gradient(95deg, rgba(108,194,255,.13), rgba(195,168,255,.14)); color: #91d2ff; }
+
+/* 主内容 */
+.content { flex: 1; min-width: 0; padding: 40px 48px 80px; }
+.doc { max-width: 860px; margin: 0 auto; }
+.doc h1 { margin: 0 0 18px; font-size: 30px; letter-spacing: -.03em; line-height: 1.3; }
+.doc h2 { margin: 34px 0 14px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 21px; letter-spacing: -.02em; }
+.doc h3 { margin: 26px 0 10px; font-size: 16.5px; }
+.doc h4 { margin: 20px 0 8px; font-size: 14.5px; }
+.doc p, .doc li { color: var(--text-2); font-size: 14.5px; line-height: 1.85; }
+.doc ul, .doc ol { padding-left: 22px; }
+.doc li { margin: 4px 0; }
+.doc code { padding: 2px 6px; border-radius: 6px; background: var(--surface-alt); color: var(--blue-deep); font-size: 13px; font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace; }
+.doc pre { overflow-x: auto; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-alt); }
+.doc pre code { padding: 0; background: none; color: var(--text); font-size: 13px; line-height: 1.7; }
+.doc img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.doc table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+.doc th, .doc td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; }
+.doc th { background: var(--surface-alt); color: var(--text); font-weight: 700; }
+.doc td { color: var(--text-2); }
+.doc blockquote { margin: 16px 0; padding: 12px 16px; border-left: 3px solid var(--blue); border-radius: 0 10px 10px 0; background: var(--surface-alt); }
+.doc blockquote p { margin: 0; }
+.doc hr { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
+
+.crumb { margin-bottom: 10px; color: var(--text-3); font-size: 12.5px; letter-spacing: .04em; }
+.doc-footer { max-width: 860px; margin: 48px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 12.5px; line-height: 1.8; }
+.doc-footer a { color: var(--text-3); }
+.doc-footer a:hover { color: var(--blue-deep); }
+
+/* 首页 */
+.home-hero { max-width: 860px; margin: 0 auto 34px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.home-hero .chip { display: inline-block; margin: 0 0 14px; padding: 6px 13px; border-radius: 999px; background: linear-gradient(95deg, rgba(22,142,230,.12), rgba(131,95,225,.14)); color: var(--blue-deep); font-size: 12.5px; font-weight: 800; letter-spacing: .06em; }
+html[data-theme="dark"] .home-hero .chip { background: linear-gradient(95deg, rgba(108,194,255,.14), rgba(195,168,255,.16)); color: #91d2ff; }
+.home-hero h1 { margin: 0 0 12px; font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -.045em; }
+.home-hero h1 span { background: linear-gradient(95deg, #168ee6 4%, #835fe1 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-theme="dark"] .home-hero h1 span { background: linear-gradient(95deg, #77ccff 4%, #c3a8ff 96%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.home-hero p { margin: 0; max-width: 620px; color: var(--text-2); font-size: 15px; line-height: 1.8; }
+.card-grid { max-width: 860px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.doc-card { display: block; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); transition: transform .2s ease, border-color .2s ease; }
+.doc-card:hover { transform: translateY(-2px); border-color: var(--line-strong); text-decoration: none; }
+.doc-card .cat { display: block; margin-bottom: 6px; color: var(--text-3); font-size: 11.5px; font-weight: 700; letter-spacing: .08em; }
+.doc-card b { color: var(--text); font-size: 15.5px; font-weight: 700; }
+
+.menu-btn { display: none; }
+@media (max-width: 900px) {
+  .sidebar { position: fixed; left: 0; top: 0; z-index: 40; transform: translateX(-100%); transition: transform .25s ease; box-shadow: var(--shadow); }
+  body.nav-open .sidebar { transform: none; }
+  .menu-btn { display: grid; position: fixed; right: 16px; bottom: 16px; z-index: 50; width: 46px; height: 46px; place-items: center; border: 1px solid var(--line); border-radius: 13px; background: var(--surface-solid); color: var(--text-2); box-shadow: var(--shadow); font-size: 20px; cursor: pointer; }
+  .content { padding: 30px 20px 70px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" type="button" onclick="toggleNav()" aria-label="目录">&#9776;</button>
+<div class="layout">
+<aside class="sidebar"><p class="brand"><img src="assets/logos/microsslink.png" alt="Microsslink" /><span>MicrossAPI 使用手册<br /><small>用户指南 · 管理员指南</small></span></p><nav><div class="nav-group"><p class="g-title">概览</p><a href="guide-home.html">首页</a><a href="guide-feature-guide.html">功能指南概述</a></div><div class="nav-group"><p class="g-title">用户指南</p><a href="guide-feature-guide-user-topup.html">充值</a><a href="guide-feature-guide-user-token.html">令牌（API Key）</a><a href="guide-feature-guide-user-api.html">API 调用</a><a href="guide-feature-guide-user-pricing.html">定价</a><a href="guide-feature-guide-user-log.html">日志</a><a href="guide-feature-guide-user-task.html">任务</a><a href="guide-feature-guide-user-subscription.html">订阅</a><a href="guide-feature-guide-user-chat-apps.html">聊天应用</a><a href="guide-feature-guide-user-personal-setting.html">个人设置</a><a href="guide-feature-guide-user-auth.html">登录与认证</a></div><div class="nav-group"><p class="g-title">管理员指南</p><a href="guide-feature-guide-admin-channel.html">渠道管理</a><a href="guide-feature-guide-admin-model.html">模型管理</a><a href="guide-feature-guide-admin-group.html">分组管理</a><a href="guide-feature-guide-admin-user.html">用户管理</a><a href="guide-feature-guide-admin-redemption.html">兑换码管理</a><a href="guide-feature-guide-admin-subscription.html">订阅管理</a><a href="guide-feature-guide-admin-log.html">日志管理</a><a href="guide-feature-guide-admin-performance.html">性能与运维</a><a href="guide-feature-guide-admin-system-setting.html">系统设置</a><a href="guide-feature-guide-admin-system-setting-advanced.html" class="active">系统设置详细配置</a><a href="guide-feature-guide-admin-custom-oauth.html">自定义 OAuth</a><a href="guide-feature-guide-admin-docs-config.html">文档页配置</a></div></nav></aside>
+<main class="content">
+<article class="doc"><p class="crumb">管理员指南</p><div><span>管理员指南</span></div><h1>系统设置详细配置</h1><p>Root 专属的系统高级配置选项</p><div></div><div><p>本页面详细说明系统设置中的各个配置标签页，涵盖支付、限流、聊天、绘图等高级功能配置。</p>
+<h2 id="支付设置"><a href="#支付设置">支付设置</a></h2>
+<p>配置平台支持的支付方式和支付参数。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="支付设置页面" width="3444" height="1634" src="assets/img/img069.png"/></span></span></p>
+<h3 id="什么是易支付"><a href="#什么是易支付">什么是易支付</a></h3>
+<p><code>易支付</code>是对&quot;第三方聚合收款网关/接口&quot;模式的泛称，并非某一家具体的网站或公司。既可指商用聚合支付服务，也可指自建/开源、遵循&quot;易支付协议风格&quot;的网关实现。</p>
+<p><strong>核心作用：</strong> 聚合微信支付、支付宝、银行卡等渠道，向商户提供统一的下单、签名校验与回调接口。</p>
+<div><divnone"></div><div><div><p><strong>合规提示：</strong> 网关本身不等同于持牌支付机构；资金清结算与合规依赖其对接的持牌渠道，请遵循所在地监管与风控要求。</p></div></div></div>
+<h3 id="epay-配置"><a href="#epay-配置">EPay 配置</a></h3>
+<p>EPay 是国内聚合支付平台，支持支付宝、微信支付等。</p>
+<ol>
+<li>在系统设置页点击「支付设置」标签页</li>
+<li>找到「EPay」配置区域</li>
+<li>填写以下信息：<!-- -->
+<ul>
+<li><strong>API 地址</strong>：EPay 提供的接口地址</li>
+<li><strong>商户 ID（PID）</strong>：从 EPay 后台获取</li>
+<li><strong>商户密钥（KEY）</strong>：从 EPay 后台获取</li>
+</ul>
+</li>
+<li>勾选「启用 EPay」</li>
+<li>点击「保存」</li>
+</ol>
+<p>平台回调参数包含签名，系统会进行校验并自动入账。</p>
+<h3 id="stripe-配置"><a href="#stripe-配置">Stripe 配置</a></h3>
+<p>Stripe 是国际信用卡支付平台。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="Stripe 配置" width="3396" height="666" src="assets/img/img070.png"/></span></span></p>
+<ol>
+<li>在支付设置页找到「Stripe」配置区域</li>
+<li>填写以下信息：<!-- -->
+<ul>
+<li><strong>API 密钥（Secret Key）</strong>：从 Stripe 控制台获取</li>
+<li><strong>Publishable Key</strong>：从 Stripe 控制台获取</li>
+<li><strong>Webhook 签名密钥</strong>：配置 Webhook 后获取</li>
+<li><strong>商品价格 ID</strong>：Stripe 产品的价格 ID</li>
+</ul>
+</li>
+<li>勾选「启用 Stripe」</li>
+<li>点击「保存」</li>
+</ol>
+<div><divnone"></div><div><div><p>Stripe 需要配置 Webhook 接收支付状态通知，Webhook URL 为：<code>https://your-domain.com/api/payment/stripe/webhook</code></p></div></div></div>
+<h3 id="其他支付方式"><a href="#其他支付方式">其他支付方式</a></h3>
+<p>平台还支持以下支付方式，配置方法类似：</p>
+<ul>
+<li><strong>Creem</strong>：国际支付平台</li>
+<li><strong>Waffo</strong>：国际支付平台</li>
+</ul>
+<h3 id="充值方式设置"><a href="#充值方式设置">充值方式设置</a></h3>
+<p>在&quot;充值方式&quot;中，可按以下结构配置：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>[</span></span>
+<span><span>  {</span></span>
+<span><span>    &quot;color&quot;</span><span>: </span><span>&quot;rgba(var(--semi-blue-5), 1)&quot;</span><span>,</span></span>
+<span><span>    &quot;name&quot;</span><span>: </span><span>&quot;支付宝&quot;</span><span>,</span></span>
+<span><span>    &quot;type&quot;</span><span>: </span><span>&quot;alipay&quot;</span></span>
+<span><span>  },</span></span>
+<span><span>  {</span></span>
+<span><span>    &quot;color&quot;</span><span>: </span><span>&quot;rgba(var(--semi-green-5), 1)&quot;</span><span>,</span></span>
+<span><span>    &quot;name&quot;</span><span>: </span><span>&quot;微信&quot;</span><span>,</span></span>
+<span><span>    &quot;type&quot;</span><span>: </span><span>&quot;wxpay&quot;</span></span>
+<span><span>  },</span></span>
+<span><span>  {</span></span>
+<span><span>    &quot;color&quot;</span><span>: </span><span>&quot;rgba(var(--semi-green-5), 1)&quot;</span><span>,</span></span>
+<span><span>    &quot;name&quot;</span><span>: </span><span>&quot;Stripe&quot;</span><span>,</span></span>
+<span><span>    &quot;type&quot;</span><span>: </span><span>&quot;stripe&quot;</span><span>,</span></span>
+<span><span>    &quot;min_topup&quot;</span><span>: </span><span>&quot;50&quot;</span></span>
+<span><span>  },</span></span>
+<span><span>  {</span></span>
+<span><span>    &quot;name&quot;</span><span>: </span><span>&quot;自定义1&quot;</span><span>,</span></span>
+<span><span>    &quot;color&quot;</span><span>: </span><span>&quot;black&quot;</span><span>,</span></span>
+<span><span>    &quot;type&quot;</span><span>: </span><span>&quot;custom1&quot;</span><span>,</span></span>
+<span><span>    &quot;min_topup&quot;</span><span>: </span><span>&quot;50&quot;</span></span>
+<span><span>  }</span></span>
+<span><span>]</span></span></code></pre></div></figure>
+<h4 id="字段说明"><a href="#字段说明">字段说明</a></h4>
+<ul>
+<li><strong>name</strong>：展示文案。显示在&quot;选择支付方式&quot;的按钮上（如&quot;支付宝/微信/Stripe/自定义1&quot;）</li>
+<li><strong>color</strong>：按钮/徽标的主题色或边框色。支持任意 CSS 颜色值，推荐使用现有设计令牌（如 <code>rgba(var(--semi-blue-5), 1)</code>）</li>
+<li><strong>type</strong>：通道标识，用于后端路由与下单<!-- -->
+<ul>
+<li><code>stripe</code> → 走 Stripe 网关</li>
+<li>其他（如 <code>alipay</code>、<code>wxpay</code>、<code>custom1</code> 等）→ 走易支付风格网关，并将该值作为渠道参数透传</li>
+<li>详细逻辑见后端控制器 <a href="https://github.com/QuantumNous/new-api/blob/main/controller/topup.go" rel="noreferrer noopener" target="_blank">controller/topup.go</a></li>
+</ul>
+</li>
+<li><strong>min_topup</strong>：最低充值金额（单位与页面货币一致）。当输入金额小于该值时，页面会提示&quot;此支付方式最低充值金额为 X&quot;，并限制发起支付；后端也会进行校验</li>
+<li><strong>排序</strong>：按数组顺序从左到右渲染</li>
+</ul>
+<h3 id="充值金额配置"><a href="#充值金额配置">充值金额配置</a></h3>
+<h4 id="自定义充值数量选项"><a href="#自定义充值数量选项">自定义充值数量选项</a></h4>
+<p>设置用户可选择的充值数量选项，例如：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>[</span><span>10</span><span>, </span><span>20</span><span>, </span><span>50</span><span>, </span><span>100</span><span>, </span><span>200</span><span>, </span><span>500</span><span>]</span></span></code></pre></div></figure>
+<p>这些数值会显示在&quot;选择充值额度&quot;区域，用户可以直接点击选择对应的充值金额。</p>
+<h4 id="充值金额折扣配置"><a href="#充值金额折扣配置">充值金额折扣配置</a></h4>
+<p>设置不同充值金额对应的折扣，键为充值金额，值为折扣率，例如：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;100&quot;</span><span>: </span><span>0.95</span><span>,</span></span>
+<span><span>  &quot;200&quot;</span><span>: </span><span>0.9</span><span>,</span></span>
+<span><span>  &quot;500&quot;</span><span>: </span><span>0.85</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>配置说明：</strong></p>
+<ul>
+<li><strong>键</strong>：充值金额（字符串格式）</li>
+<li><strong>值</strong>：折扣率（0-1之间的小数，如 0.95 表示 95% 价格，即 5% 折扣）</li>
+<li>系统会根据配置自动计算实付金额和节省金额</li>
+<li>详细实现逻辑见后端控制器 <a href="https://github.com/QuantumNous/new-api/blob/main/controller/topup.go" rel="noreferrer noopener" target="_blank">controller/topup.go</a></li>
+</ul>
+<div><divnone"></div><div><div><p>充值折扣可以激励用户一次性充值更多金额，提高用户粘性</p></div></div></div>
+<h2 id="限流设置"><a href="#限流设置">限流设置</a></h2>
+<p>配置 API 调用的频率限制，防止滥用和保护系统稳定性。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="限流设置页面" width="2468" height="1362" src="assets/img/img071.png"/></span></span></p>
+<h3 id="全局限流"><a href="#全局限流">全局限流</a></h3>
+<ol>
+<li>在系统设置页点击「限流设置」标签页</li>
+<li>配置全局限流参数：<!-- -->
+<ul>
+<li><strong>每分钟请求数</strong>：单个 IP 每分钟最多请求次数</li>
+<li><strong>每小时请求数</strong>：单个 IP 每小时最多请求次数</li>
+<li><strong>每天请求数</strong>：单个 IP 每天最多请求次数</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h3 id="按用户分组限流"><a href="#按用户分组限流">按用户分组限流</a></h3>
+<p>可以为不同用户分组设置不同的限流策略：</p>
+<ol>
+<li>在分组管理页编辑分组</li>
+<li>设置该分组的限流参数</li>
+<li>分组内所有用户共享该限流配置</li>
+</ol>
+<h4 id="分组速率限制配置示例"><a href="#分组速率限制配置示例">分组速率限制配置示例</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;default&quot;</span><span>: [</span><span>200</span><span>, </span><span>100</span><span>],</span></span>
+<span><span>  &quot;vip&quot;</span><span>: [</span><span>0</span><span>, </span><span>1000</span><span>]</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<p><strong>配置说明：</strong></p>
+<ul>
+<li><strong>键</strong>：分组名称</li>
+<li><strong>值</strong>：数组，包含两个数字<!-- -->
+<ul>
+<li>第一个数字：每分钟请求数限制</li>
+<li>第二个数字：每小时请求数限制</li>
+<li>设置为 0 表示不限制</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例解释：</strong></p>
+<ul>
+<li><code>default</code> 分组：每分钟最多 200 次请求，每小时最多 100 次请求</li>
+<li><code>vip</code> 分组：每分钟不限制，每小时最多 1000 次请求</li>
+</ul>
+<div><divnone"></div><div><div><p>限流设置过低可能影响正常使用，建议根据实际业务需求合理配置</p></div></div></div>
+<h2 id="倍率设置"><a href="#倍率设置">倍率设置</a></h2>
+<p>倍率设置是 MicrossAPI 计费系统的核心配置，通过设置不同的倍率可以灵活控制各种模型和用户组的计费标准。</p>
+<h3 id="倍率系统概述"><a href="#倍率系统概述">倍率系统概述</a></h3>
+<p>MicrossAPI 使用三层倍率体系来计算用户的配额消耗：</p>
+<ol>
+<li><strong>模型倍率（ModelRatio）</strong> - 定义不同AI模型的基础计费倍数</li>
+<li><strong>补全倍率（CompletionRatio）</strong> - 对输出token进行额外计费调整</li>
+<li><strong>分组倍率（GroupRatio）</strong> - 为不同用户组设置差异化计费倍数</li>
+</ol>
+<h3 id="配额与倍率的关系"><a href="#配额与倍率的关系">配额与倍率的关系</a></h3>
+<p>在 MicrossAPI 系统中，倍率是计算配额消耗的关键参数。配额是系统内部的计费单位，所有的API调用最终都会转换为配额点数进行扣减。</p>
+<p><strong>配额单位转换：</strong></p>
+<ul>
+<li>1 美元 = 500,000 配额点数</li>
+<li>配额点数是系统内部计费的基础单位</li>
+<li>用户的余额、消费记录都以配额点数为准</li>
+</ul>
+<h3 id="配额计算公式"><a href="#配额计算公式">配额计算公式</a></h3>
+<h4 id="按量计费模型基于token消耗"><a href="#按量计费模型基于token消耗">按量计费模型（基于Token消耗）</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = (输入token数 + 输出token数 × 补全倍率) × 模型倍率 × 分组倍率</span></span></code></pre></div></figure>
+<h4 id="按次计费模型固定价格"><a href="#按次计费模型固定价格">按次计费模型（固定价格）</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = 模型固定价格 × 分组倍率 × 配额单位(500,000)</span></span></code></pre></div></figure>
+<h4 id="音频模型特殊处理microssapi内部自动处理"><a href="#音频模型特殊处理microssapi内部自动处理">音频模型（特殊处理，microssapi内部自动处理）</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = (文本输入token + 文本输出token × 补全倍率 + 音频输入token × 音频倍率 + 音频输出token × 音频倍率 × 音频补全倍率) × 模型倍率 × 分组倍率</span></span></code></pre></div></figure>
+<h4 id="预消费与后消费机制"><a href="#预消费与后消费机制">预消费与后消费机制</a></h4>
+<p>MicrossAPI 采用预消费和后消费的双重计费机制：</p>
+<ol>
+<li><strong>预消费阶段</strong>：API调用前，根据预估token数计算配额消耗并预扣</li>
+<li><strong>后消费阶段</strong>：API调用完成后，根据实际token数重新计算配额消耗</li>
+<li><strong>差额调整</strong>：如果实际消耗与预消费不同，系统会自动调整用户配额余额</li>
+</ol>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>预消费配额 = 预估token数 × 模型倍率 × 分组倍率</span></span>
+<span><span>实际配额 = 实际token数 × 模型倍率 × 分组倍率</span></span>
+<span><span>配额调整 = 实际配额 - 预消费配额</span></span></code></pre></div></figure>
+<h3 id="模型倍率设置"><a href="#模型倍率设置">模型倍率设置</a></h3>
+<p>模型倍率定义了不同AI模型的基础计费倍数，系统为各种模型预设了默认倍率。</p>
+<h4 id="常见模型倍率示例"><a href="#常见模型倍率示例">常见模型倍率示例</a></h4>
+<div><table><thead><tr><th>模型名称</th><th>模型倍率</th><th>补全倍率</th><th>官网价格（输入）</th><th>官网价格（输出）</th></tr></thead><tbody><tr><td>gpt-4o</td><td>1.25</td><td>4</td><td>$2.5/1M Tokens</td><td>$10/1M Tokens</td></tr><tr><td>gpt-3.5-turbo</td><td>0.25</td><td>1.33</td><td>$0.5/1M Tokens</td><td>$1.5/1M Tokens</td></tr><tr><td>gpt-4o-mini</td><td>0.075</td><td>4</td><td>$0.15/1M Tokens</td><td>$0.6/1M Tokens</td></tr><tr><td>o1</td><td>7.5</td><td>4</td><td>$15/1M Tokens</td><td>$60/1M Tokens</td></tr></tbody></table></div>
+<p><strong>倍率含义说明：</strong></p>
+<ul>
+<li>模型倍率：相对于基础计费单位的倍数，反映模型的成本差异</li>
+<li>补全倍率：输出token相对于输入token的计费倍数，反映输出成本差异</li>
+<li>倍率越高，消耗的配额越多；倍率越低，消耗的配额越少</li>
+</ul>
+<h4 id="设置方法"><a href="#设置方法">设置方法</a></h4>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型倍率设置 - 页面1" width="2434" height="1872" src="assets/img/img072.png"/></span></span></p>
+<ol>
+<li>在系统设置页点击「倍率设置」标签页</li>
+<li>在模型倍率列表中找到目标模型</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型倍率设置 - 页面2" width="2330" height="1386" src="assets/img/img073.png"/></span></span></p>
+<ol start="3">
+<li>修改以下参数：<!-- -->
+<ul>
+<li><strong>输入倍率</strong>：输入 Token 的计费倍率</li>
+<li><strong>输出倍率</strong>：输出 Token 的计费倍率</li>
+<li><strong>补全倍率</strong>：补全接口的计费倍率</li>
+</ul>
+</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型倍率设置 - 页面3" width="3462" height="1220" src="assets/img/img074.png"/></span></span></p>
+<ol start="4">
+<li>点击「保存」</li>
+</ol>
+<p><strong>设置方式：</strong></p>
+<ol>
+<li>JSON格式设置：直接编辑模型倍率JSON配置</li>
+<li>可视化编辑器：通过图形界面设置倍率</li>
+</ol>
+<h3 id="补全倍率设置"><a href="#补全倍率设置">补全倍率设置</a></h3>
+<p>补全倍率用于对输出token进行额外计费，主要用于平衡不同模型的输入输出成本差异。</p>
+<h4 id="默认补全倍率"><a href="#默认补全倍率">默认补全倍率</a></h4>
+<div><table><thead><tr><th>模型类型</th><th>官网价格（输入）</th><th>官网价格（输出）</th><th>补全倍率</th><th>说明</th></tr></thead><tbody><tr><td>gpt-4o</td><td>2.5$/1M Tokens</td><td>10$/1M Tokens</td><td>4</td><td>输出是输入的4倍</td></tr><tr><td>gpt-3.5-turbo</td><td>0.5$/1M Tokens</td><td>1$/1M Tokens</td><td>2</td><td>输出是输入的2倍</td></tr><tr><td>gpt-image-1</td><td>5$/1M Tokens</td><td>40$/1M Tokens</td><td>8</td><td>输出是输入的8倍</td></tr><tr><td>gpt-4o-mini</td><td>0.15$/1M Tokens</td><td>0.6$/1M Tokens</td><td>4</td><td>输出是输入的4倍</td></tr><tr><td>其他模型</td><td>1</td><td>1</td><td>1</td><td>输出是输入的1倍</td></tr></tbody></table></div>
+<p><strong>设置说明：</strong></p>
+<ul>
+<li>补全倍率主要影响输出token的计费</li>
+<li>设置为1表示输出token计费与输入token计费相同</li>
+<li>大于1表示输出token计费更高，小于1表示输出token计费更低</li>
+</ul>
+<h3 id="分组倍率设置"><a href="#分组倍率设置">分组倍率设置</a></h3>
+<p>分组倍率允许为不同用户组设置差异化的计费倍数，实现灵活的定价策略。</p>
+<h4 id="分组倍率配置"><a href="#分组倍率配置">分组倍率配置</a></h4>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>{</span></span>
+<span><span>  &quot;vip&quot;</span><span>: </span><span>0.5</span><span>,</span></span>
+<span><span>  &quot;premium&quot;</span><span>: </span><span>0.8</span><span>,</span></span>
+<span><span>  &quot;standard&quot;</span><span>: </span><span>1.0</span><span>,</span></span>
+<span><span>  &quot;trial&quot;</span><span>: </span><span>2.0</span></span>
+<span><span>}</span></span></code></pre></div></figure>
+<h4 id="分组倍率优先级"><a href="#分组倍率优先级">分组倍率优先级</a></h4>
+<ol>
+<li>用户专属倍率：为特定用户设置的个人倍率</li>
+<li>分组倍率：用户所属分组的倍率</li>
+<li>默认倍率：系统默认倍率（通常为1.0）</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="分组倍率设置 - 页面4" width="3472" height="534" src="assets/img/img075.png"/></span></span></p>
+<p>为不同用户分组设置差异化的计费倍率：</p>
+<ol>
+<li>在倍率设置页找到「分组倍率」区域</li>
+<li>选择目标分组</li>
+<li>设置该分组的全局倍率系数（如 0.8 表示 8 折）</li>
+</ol>
+<p><span aria-owns="rmiz-modal-"><span><img alt="分组倍率设置 - 页面5" width="1848" height="1366" src="assets/img/img076.png"/></span></span></p>
+<ol start="4">
+<li>点击「保存」</li>
+</ol>
+<p>分组倍率与模型倍率叠加计算：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>最终消耗 = Token 数量 × 模型倍率 × 分组倍率</span></span></code></pre></div></figure>
+<h3 id="可视化倍率设置"><a href="#可视化倍率设置">可视化倍率设置</a></h3>
+<p>可视化编辑器提供了直观的倍率管理界面，支持：</p>
+<ul>
+<li>批量编辑模型倍率</li>
+<li>实时预览倍率配置</li>
+<li>冲突检测和提示</li>
+<li>一键同步上游倍率</li>
+</ul>
+<h3 id="未设置倍率模型"><a href="#未设置倍率模型">未设置倍率模型</a></h3>
+<p>对于未设置倍率的模型，系统会：</p>
+<ol>
+<li>自用模式：使用默认倍率37.5</li>
+<li>商业模式：提示&quot;倍率或价格未配置&quot;错误</li>
+<li>自动检测：在管理界面显示未配置的模型</li>
+</ol>
+<h3 id="上游倍率同步"><a href="#上游倍率同步">上游倍率同步</a></h3>
+<p>系统支持从上游渠道自动同步倍率设置：</p>
+<ul>
+<li>自动获取上游模型倍率</li>
+<li>批量更新本地倍率配置</li>
+<li>保持与上游价格同步</li>
+<li>支持手动调整和覆盖</li>
+</ul>
+<h3 id="常见问题"><a href="#常见问题">常见问题</a></h3>
+<h4 id="q-如何为新模型设置倍率"><a href="#q-如何为新模型设置倍率">Q: 如何为新模型设置倍率？</a></h4>
+<p>A: 可以通过可视化编辑器添加新模型，或直接在JSON配置中添加。建议先设置保守倍率，根据实际使用情况调整。</p>
+<h4 id="q-分组倍率如何生效"><a href="#q-分组倍率如何生效">Q: 分组倍率如何生效？</a></h4>
+<p>A: 分组倍率会与模型倍率相乘，最终影响用户的配额消耗计算。用户的实际倍率 = 模型倍率 × 分组倍率。</p>
+<h4 id="q-补全倍率的作用是什么"><a href="#q-补全倍率的作用是什么">Q: 补全倍率的作用是什么？</a></h4>
+<p>A: 补全倍率主要用于平衡输入输出token的成本差异。某些模型的输出成本远高于输入成本，需要通过补全倍率进行调整。</p>
+<h4 id="q-如何批量设置相似模型的倍率"><a href="#q-如何批量设置相似模型的倍率">Q: 如何批量设置相似模型的倍率？</a></h4>
+<p>A: 可以通过可视化编辑器进行批量操作，或者直接在JSON配置中批量添加相似模型的倍率设置。</p>
+<h3 id="配额计算实例"><a href="#配额计算实例">配额计算实例</a></h3>
+<h4 id="示例1gpt-4-标准用户对话"><a href="#示例1gpt-4-标准用户对话">示例1：GPT-4 标准用户对话</a></h4>
+<p>场景参数：</p>
+<ul>
+<li>输入token：1,000</li>
+<li>输出token：500</li>
+<li>模型倍率：15</li>
+<li>补全倍率：2</li>
+<li>分组倍率：1.0（标准用户）</li>
+</ul>
+<p>计算过程：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = (1,000 + 500 × 2) × 15 × 1.0</span></span>
+<span><span>         = (1,000 + 1,000) × 15</span></span>
+<span><span>         = 2,000 × 15</span></span>
+<span><span>         = 30,000 配额点数</span></span></code></pre></div></figure>
+<p>等价美元成本：30,000 ÷ 500,000 = $0.06</p>
+<h4 id="示例2gpt-35-vip用户对话"><a href="#示例2gpt-35-vip用户对话">示例2：GPT-3.5 VIP用户对话</a></h4>
+<p>场景参数：</p>
+<ul>
+<li>输入token：2,000</li>
+<li>输出token：1,000</li>
+<li>模型倍率：0.25</li>
+<li>补全倍率：1.33</li>
+<li>分组倍率：0.5（VIP用户50%折扣）</li>
+</ul>
+<p>计算过程：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = (2,000 + 1,000 × 1.33) × 0.25 × 0.5</span></span>
+<span><span>         = (2,000 + 1,330) × 0.125</span></span>
+<span><span>         = 3,330 × 0.125</span></span>
+<span><span>         = 416.25 配额点数</span></span></code></pre></div></figure>
+<p>等价美元成本：416.25 ÷ 500,000 = $0.00083</p>
+<h4 id="示例3按次计费模型如midjourney"><a href="#示例3按次计费模型如midjourney">示例3：按次计费模型（如Midjourney）</a></h4>
+<p>场景参数：</p>
+<ul>
+<li>模型固定价格：$0.02</li>
+<li>分组倍率：1.0（标准用户）</li>
+<li>配额单位：500,000</li>
+</ul>
+<p>计算过程：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>配额消耗 = 0.02 × 1.0 × 500,000</span></span>
+<span><span>         = 10,000 配额点数</span></span></code></pre></div></figure>
+<p>等价美元成本：10,000 ÷ 500,000 = $0.02</p>
+<div><divnone"></div><div><div><p>有关更多计费规则，请查看<a href="support/faq.html">常见问题</a></p></div></div></div>
+<h2 id="聊天设置"><a href="#聊天设置">聊天设置</a></h2>
+<p>配置内置聊天功能的相关参数。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="聊天设置页面" width="2436" height="1122" src="assets/img/img077.png"/></span></span></p>
+<h3 id="聊天应用配置"><a href="#聊天应用配置">聊天应用配置</a></h3>
+<ol>
+<li>在系统设置页点击「聊天设置」标签页</li>
+<li>配置以下选项：<!-- -->
+<ul>
+<li><strong>启用聊天功能</strong>：开关控制是否启用内置聊天</li>
+<li><strong>默认模型</strong>：聊天页面默认选中的模型</li>
+<li><strong>最大历史消息数</strong>：保留的历史对话轮数</li>
+<li><strong>流式输出</strong>：是否默认启用流式输出</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h3 id="聊天集成变量"><a href="#聊天集成变量">聊天集成变量</a></h3>
+<p>在配置聊天应用集成时，可以使用以下变量：</p>
+<ul>
+<li><strong><code>{key}</code></strong>：替换为密钥（API Key）</li>
+<li><strong><code>{address}</code></strong>：替换为服务器地址（末尾不带 <code>/</code> 和 <code>/v1</code>）</li>
+</ul>
+<p><strong>使用示例：</strong></p>
+<p>配置模板：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>https://{address}/v1</span></span></code></pre></div></figure>
+<p>实际替换后：</p>
+<figure dir="ltr"-1"><div></div><divregion"0"><pre><code><span><span>https://api.example.com/v1</span></span></code></pre></div></figure>
+<div><divnone"></div><div><div><p>这些变量在一键导入配置到聊天应用时会自动替换为实际值</p></div></div></div>
+<h3 id="聊天应用集成"><a href="#聊天应用集成">聊天应用集成</a></h3>
+<p>配置第三方聊天应用的集成参数：</p>
+<ul>
+<li><strong>ChatGPT Next Web</strong>：配置部署地址</li>
+<li><strong>Lobe Chat</strong>：配置推荐设置</li>
+<li><strong>其他应用</strong>：配置集成参数</li>
+</ul>
+<h2 id="绘图设置"><a href="#绘图设置">绘图设置</a></h2>
+<p>配置 Midjourney 等绘图功能的相关参数。</p>
+<p><span aria-owns="rmiz-modal-"><span><img alt="绘图设置页面" width="2922" height="592" src="assets/img/img078.png"/></span></span></p>
+<h3 id="midjourney-配置"><a href="#midjourney-配置">Midjourney 配置</a></h3>
+<ol>
+<li>在系统设置页点击「绘图设置」标签页</li>
+<li>配置 Midjourney 参数：<!-- -->
+<ul>
+<li><strong>启用 Midjourney</strong>：开关控制是否启用绘图功能</li>
+<li><strong>Midjourney Proxy 地址</strong>：Midjourney-Proxy 服务地址</li>
+<li><strong>API 密钥</strong>：Midjourney-Proxy 的密钥</li>
+<li><strong>超时时间</strong>：绘图任务超时时间（秒）</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h3 id="绘图计费"><a href="#绘图计费">绘图计费</a></h3>
+<p>配置绘图任务的计费规则：</p>
+<ul>
+<li><strong>按次计费</strong>：每次绘图消耗固定配额</li>
+<li><strong>按时长计费</strong>：根据绘图耗时计费</li>
+<li><strong>按分辨率计费</strong>：根据图片分辨率计费</li>
+</ul>
+<div><divnone"></div><div><div><p>Midjourney 功能需要额外部署 Midjourney-Proxy 服务，详见部署文档</p></div></div></div>
+<h2 id="数据看板设置"><a href="#数据看板设置">数据看板设置</a></h2>
+<p>配置数据看板的显示内容和统计维度。</p>
+<h3 id="看板配置---基础设置"><a href="#看板配置---基础设置">看板配置 - 基础设置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="数据看板设置 - 页面1" width="3360" height="1710" src="assets/img/img079.png"/></span></span></p>
+<ol>
+<li>在系统设置页点击「数据看板设置」标签页</li>
+<li>配置显示选项：<!-- -->
+<ul>
+<li><strong>显示用户统计</strong>：是否显示用户数量统计</li>
+<li><strong>显示渠道统计</strong>：是否显示渠道使用统计</li>
+<li><strong>显示模型统计</strong>：是否显示模型调用统计</li>
+</ul>
+</li>
+</ol>
+<h3 id="看板配置---图表设置"><a href="#看板配置---图表设置">看板配置 - 图表设置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="数据看板设置 - 页面2" width="3404" height="1062" src="assets/img/img080.png"/></span></span></p>
+<ol start="3">
+<li>配置图表参数：<!-- -->
+<ul>
+<li><strong>默认时间范围</strong>：看板默认显示的时间范围</li>
+<li><strong>刷新间隔</strong>：自动刷新的时间间隔</li>
+<li><strong>图表类型</strong>：折线图、柱状图或饼图</li>
+</ul>
+</li>
+</ol>
+<h3 id="看板配置---高级选项"><a href="#看板配置---高级选项">看板配置 - 高级选项</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="数据看板设置 - 页面3" width="3352" height="1814" src="assets/img/img081.png"/></span></span></p>
+<ol start="4">
+<li>配置高级选项：<!-- -->
+<ul>
+<li><strong>数据缓存时间</strong>：统计数据的缓存时长</li>
+<li><strong>显示实时数据</strong>：是否显示实时统计</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h2 id="模型设置"><a href="#模型设置">模型设置</a></h2>
+<p>配置模型的显示和行为参数。</p>
+<h3 id="模型显示设置"><a href="#模型显示设置">模型显示设置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型设置 - 页面1" width="3390" height="878" src="assets/img/img082.png"/></span></span></p>
+<ol>
+<li>在系统设置页点击「模型设置」标签页</li>
+<li>配置模型显示选项：<!-- -->
+<ul>
+<li><strong>显示模型描述</strong>：是否在模型列表中显示描述</li>
+<li><strong>显示模型图标</strong>：是否显示模型厂商图标</li>
+<li><strong>模型分组显示</strong>：按厂商或类型分组显示</li>
+</ul>
+</li>
+</ol>
+<h3 id="模型行为设置"><a href="#模型行为设置">模型行为设置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型设置 - 页面2" width="3176" height="1890" src="assets/img/img083.png"/></span></span></p>
+<ol start="3">
+<li>配置模型行为：<!-- -->
+<ul>
+<li><strong>自动禁用失败模型</strong>：连续失败后自动禁用</li>
+<li><strong>失败阈值</strong>：触发自动禁用的失败次数</li>
+<li><strong>自动恢复时间</strong>：禁用后自动恢复的时间（分钟）</li>
+</ul>
+</li>
+</ol>
+<h3 id="模型同步设置"><a href="#模型同步设置">模型同步设置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="模型设置 - 页面3" width="2788" height="1524" src="assets/img/img084.png"/></span></span></p>
+<ol start="4">
+<li>配置模型同步：<!-- -->
+<ul>
+<li><strong>自动同步上游模型</strong>：定期从服务商同步最新模型列表</li>
+<li><strong>同步间隔</strong>：自动同步的时间间隔（小时）</li>
+<li><strong>同步时保留自定义配置</strong>：同步时不覆盖手动修改的配置</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h2 id="运营设置"><a href="#运营设置">运营设置</a></h2>
+<p>配置平台运营相关的参数。</p>
+<h3 id="基础运营配置"><a href="#基础运营配置">基础运营配置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="运营设置 - 页面1" width="2402" height="1714" src="assets/img/img085.png"/></span></span></p>
+<ol>
+<li>在系统设置页点击「运营设置」标签页</li>
+<li>配置运营参数：<!-- -->
+<ul>
+<li><strong>新用户初始配额</strong>：新注册用户的初始配额</li>
+<li><strong>邀请奖励配额</strong>：邀请新用户注册后，邀请人可获得的奖励配额</li>
+<li><strong>返利比例</strong>：被邀请用户在充值时，邀请人可获得的返利配额比例（%）</li>
+</ul>
+</li>
+</ol>
+<h3 id="充值配置"><a href="#充值配置">充值配置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="运营设置 - 页面2" width="2398" height="1560" src="assets/img/img086.png"/></span></span></p>
+<ol start="3">
+<li>配置充值选项：<!-- -->
+<ul>
+<li><strong>最低充值金额</strong>：单次充值的最低金额</li>
+<li><strong>充值赠送比例</strong>：充值赠送的额外配额比例</li>
+<li><strong>充值档位</strong>：预设的充值金额选项</li>
+</ul>
+</li>
+</ol>
+<h3 id="兑换码配置"><a href="#兑换码配置">兑换码配置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="运营设置 - 页面3" width="2422" height="606" src="assets/img/img087.png"/></span></span></p>
+<ol start="4">
+<li>配置兑换码：<!-- -->
+<ul>
+<li><strong>兑换码有效期</strong>：兑换码的默认有效期（天）</li>
+<li><strong>单用户兑换次数限制</strong>：每个用户可兑换的次数</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<h2 id="其他设置"><a href="#其他设置">其他设置</a></h2>
+<p>配置其他杂项参数。</p>
+<h3 id="首页配置"><a href="#首页配置">首页配置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="其他设置 - 页面1" width="3396" height="604" src="assets/img/img088.png"/></span></span></p>
+<ol>
+<li>在系统设置页点击「其他设置」标签页</li>
+<li>配置首页内容：<!-- -->
+<ul>
+<li><strong>首页公告</strong>：在首页显示的公告内容（支持 Markdown）</li>
+<li><strong>首页背景图</strong>：首页背景图片 URL</li>
+<li><strong>显示统计数据</strong>：是否在首页显示平台统计数据</li>
+</ul>
+</li>
+</ol>
+<h3 id="其他功能配置"><a href="#其他功能配置">其他功能配置</a></h3>
+<p><span aria-owns="rmiz-modal-"><span><img alt="其他设置 - 页面2" width="3334" height="1758" src="assets/img/img089.png"/></span></span></p>
+<ol start="3">
+<li>配置其他功能：<!-- -->
+<ul>
+<li><strong>启用日志导出</strong>：允许用户导出自己的使用日志</li>
+<li><strong>日志保留天数</strong>：系统自动清理多少天前的日志</li>
+<li><strong>启用 API 文档</strong>：是否显示 API 文档入口</li>
+</ul>
+</li>
+<li>点击「保存」</li>
+</ol>
+<div><divnone"></div><div><div><p>以上所有设置仅 Root 用户可见和修改，普通管理员无权访问</p></div></div></div></div><div><div>
+<p class="doc-footer">本手册为 Microsslink 微观互联旗下 MicrossAPI 平台的站内使用文档，内容基于上游开源项目 New API（docs.newapi.ai）的官方文档整理本地化，仅供站内用户学习使用；版权归原项目所有，以官方最新文档为准。</p>
+</article>
+</main>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply() { root.setAttribute('data-theme', mq.matches ? 'dark' : 'light'); }
+  if (mq.addEventListener) mq.addEventListener('change', apply); else if (mq.addListener) mq.addListener(apply);
+  apply();
+})();
+function toggleNav() { document.body.classList.toggle('nav-open'); }
+document.addEventListener('click', function (e) {
+  if (document.body.classList.contains('nav-open') && !e.target.closest('.sidebar') && !e.target.closest('.menu-btn')) {
+    document.body.classList.remove('nav-open');
+  }
+});
+</script>
+</body>
+</html>
